@@ -19,6 +19,10 @@ class MultipleCubeViewController: UIViewController {
         setupCollectionView()
     }
     
+//    override func viewDidLayoutSubviews() {
+//        collectionView.layoutIfNeeded()
+//    }
+    
     private func setupCollectionView() {
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -33,7 +37,10 @@ class MultipleCubeViewController: UIViewController {
 }
 
 extension MultipleCubeViewController: UICollectionViewDelegate {
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.reloadItems(at: [indexPath])
+//        collectionView.reloadData()
+    }
 }
 
 extension MultipleCubeViewController: UICollectionViewDataSource {
@@ -43,7 +50,7 @@ extension MultipleCubeViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCollectionViewCell.identifier, for: indexPath) as? ImageCollectionViewCell else { return UICollectionViewCell() }
-        cell.configure(with: colorArray[indexPath.row])
+        cell.configure(with: indexPath.row)
         return cell
     }
 }

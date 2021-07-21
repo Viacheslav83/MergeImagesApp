@@ -9,9 +9,9 @@ import UIKit
 
 extension UIView {
     
-    func fadeLayer(withTransform transform:CATransform3D) -> CALayer {
+    func fadeLayer(withTransform transform: CATransform3D) -> CALayer {
         
-        let imageLayer:CALayer = CALayer.init()
+        let imageLayer: CALayer = CALayer.init()
         imageLayer.anchorPoint = CGPoint.init(x: 1.0, y: 1.0)
         imageLayer.frame = bounds
         imageLayer.transform = transform

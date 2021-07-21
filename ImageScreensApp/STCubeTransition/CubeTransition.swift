@@ -25,8 +25,11 @@ private let fromViewKey = "FromView"
 /*
  Cube transition direction options enum
  */
-public enum CubeTransitionDirection : Int {
-    case Down = 1, Up, Left, Right
+public enum CubeTransitionDirection: Int {
+    case down = 1
+    case up
+    case left
+    case right
 }
 
 open class CubeTransition: UICollectionViewCell, CAAnimationDelegate {
@@ -34,7 +37,11 @@ open class CubeTransition: UICollectionViewCell, CAAnimationDelegate {
     private var focalLength:Double = 0.0
     private var translationQueue = [UIView: Transition]()
     
-    public func translateView(_ fromView: UIView, toView: UIView, direction: CubeTransitionDirection, duration: Float, completion: @escaping (_ displayView: UIView) -> ()) {
+    public func translateView(_ fromView: UIView,
+                              toView: UIView,
+                              direction: CubeTransitionDirection,
+                              duration: Float,
+                              completion: @escaping (_ displayView: UIView) -> ()) {
         
         if translationQueue.keys.contains(fromView) {
             return
@@ -57,29 +64,29 @@ open class CubeTransition: UICollectionViewCell, CAAnimationDelegate {
         animationLayer.sublayerTransform = sublayerTransform
         fromView.layer.addSublayer(animationLayer)
         
-        var t:CATransform3D = CATransform3DMakeTranslation(0.0, 0.0, 0.0)
-        let fadeOutLayer = fromView.fadeLayer(withTransform: t)
+        var tranform: CATransform3D = CATransform3DMakeTranslation(0.0, 0.0, 0.0)
+        let fadeOutLayer = fromView.fadeLayer(withTransform: tranform)
         animationLayer.addSublayer(fadeOutLayer)
         
         switch direction {
-        case .Down:
-            t = CATransform3DTranslate(t, 0, -fromView.bounds.size.height, 0);
-            t = CATransform3DRotate(t, CGFloat(Double.pi/2), 1, 0, 0);
+        case .down:
+            tranform = CATransform3DTranslate(tranform, 0, -fromView.bounds.size.height, 0);
+            tranform = CATransform3DRotate(tranform, CGFloat(Double.pi/2), 1, 0, 0);
             
-        case .Up:
-            t = CATransform3DRotate(t, CGFloat(-(Double.pi/2)), 1, 0, 0);
-            t = CATransform3DTranslate(t, 0, fromView.bounds.size.height, 0);
+        case .up:
+            tranform = CATransform3DRotate(tranform, CGFloat(-(Double.pi/2)), 1, 0, 0);
+            tranform = CATransform3DTranslate(tranform, 0, fromView.bounds.size.height, 0);
             
-        case .Left:
-            t = CATransform3DRotate(t, CGFloat(Double.pi/2), 0, 1, 0);
-            t = CATransform3DTranslate(t, fromView.bounds.size.width, 0, 0);
+        case .left:
+            tranform = CATransform3DRotate(tranform, CGFloat(Double.pi/2), 0, 1, 0);
+            tranform = CATransform3DTranslate(tranform, fromView.bounds.size.width, 0, 0);
             
-        case .Right:
-            t = CATransform3DTranslate(t, -fromView.bounds.size.width, 0, 0);
-            t = CATransform3DRotate(t, CGFloat(-(Double.pi/2)), 0, 1, 0);
+        case .right:
+            tranform = CATransform3DTranslate(tranform, -fromView.bounds.size.width, 0, 0);
+            tranform = CATransform3DRotate(tranform, CGFloat(-(Double.pi/2)), 0, 1, 0);
         }
         
-        let fadeInLayer = toView.fadeLayer(withTransform: t)
+        let fadeInLayer = toView.fadeLayer(withTransform: tranform)
         animationLayer.addSublayer(fadeInLayer)
         
         fromView.backgroundColor = UIColor.clear
@@ -95,15 +102,15 @@ open class CubeTransition: UICollectionViewCell, CAAnimationDelegate {
         var translation: CABasicAnimation?
         var translationZ: CABasicAnimation?
         
-        let group:CAAnimationGroup = CAAnimationGroup.init()
+        let group: CAAnimationGroup = CAAnimationGroup.init()
         group.delegate = self
         group.duration = CFTimeInterval(duration)
         group.timingFunction = CAMediaTimingFunction.init(name: CAMediaTimingFunctionName.easeInEaseOut)
         
         
         switch direction {
-        case .Down:
-            let toValue:Float = Float(transition.fromView.bounds.size.height / 2)
+        case .down:
+            let toValue: Float = Float(transition.fromView.bounds.size.height / 2)
             translation = CABasicAnimation.init(keyPath: "sublayerTransform.translation.y")
             translation?.toValue = NSNumber.init(value: toValue)
             rotation = CABasicAnimation.init(keyPath: "sublayerTransform.rotation.x")
@@ -111,8 +118,8 @@ open class CubeTransition: UICollectionViewCell, CAAnimationDelegate {
             translationZ = CABasicAnimation.init(keyPath: "sublayerTransform.translation.z")
             translationZ?.toValue = NSNumber.init(value: -toValue)
             
-        case .Up:
-            let toValue:Float = Float(transition.fromView.bounds.size.height / 2)
+        case .up:
+            let toValue: Float = Float(transition.fromView.bounds.size.height / 2)
             translation = CABasicAnimation.init(keyPath: "sublayerTransform.translation.y")
             translation?.toValue = NSNumber.init(value: -toValue)
             rotation = CABasicAnimation.init(keyPath: "sublayerTransform.rotation.x")
@@ -120,8 +127,8 @@ open class CubeTransition: UICollectionViewCell, CAAnimationDelegate {
             translationZ = CABasicAnimation.init(keyPath: "sublayerTransform.translation.z")
             translationZ?.toValue = NSNumber.init(value: -toValue)
             
-        case .Left:
-            let toValue:Float = Float(transition.fromView.bounds.size.width / 2)
+        case .left:
+            let toValue: Float = Float(transition.fromView.bounds.size.width / 2)
             translation = CABasicAnimation.init(keyPath: "sublayerTransform.translation.x")
             translation?.toValue = NSNumber.init(value: -toValue)
             rotation = CABasicAnimation.init(keyPath: "sublayerTransform.rotation.y")
@@ -129,8 +136,8 @@ open class CubeTransition: UICollectionViewCell, CAAnimationDelegate {
             translationZ = CABasicAnimation.init(keyPath: "sublayerTransform.translation.z")
             translationZ?.toValue = NSNumber.init(value: -toValue)
             
-        case .Right:
-            let toValue:Float = Float(transition.fromView.bounds.size.width / 2)
+        case .right:
+            let toValue: Float = Float(transition.fromView.bounds.size.width / 2)
             translation = CABasicAnimation.init(keyPath: "sublayerTransform.translation.x")
             translation?.toValue = NSNumber.init(value: toValue)
             rotation = CABasicAnimation.init(keyPath: "sublayerTransform.rotation.y")

@@ -22,12 +22,15 @@ class Transition {
      */
     let completionHandler: (_ displayView: UIView) -> Void
     
-    
-    init(_ fromView: UIView, toView: UIView, overlayView: UIView, completion: @escaping (_ displayView: UIView) -> ()) {
+    init(_ fromView: UIView,
+         toView: UIView,
+         overlayView: UIView,
+         completion: @escaping (_ displayView: UIView) -> ())
+    {
         self.fromView = fromView
         self.toView = toView
         self.overlayView = overlayView
-        self.backgroundColor = fromView.backgroundColor!
+        self.backgroundColor = fromView.backgroundColor ?? .blue
         self.completionHandler = completion
     }
 }

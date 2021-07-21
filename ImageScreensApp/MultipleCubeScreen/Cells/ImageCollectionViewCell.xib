@@ -32,7 +32,7 @@
             </constraints>
             <size key="customSize" width="139" height="137"/>
             <connections>
-                <outlet property="view" destination="LOK-Dz-kp7" id="4Ih-CB-v7D"/>
+                <outlet property="ownView" destination="LOK-Dz-kp7" id="4Ih-CB-v7D"/>
             </connections>
             <point key="canvasLocation" x="160.1449275362319" y="86.71875"/>
         </collectionViewCell>

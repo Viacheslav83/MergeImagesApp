@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension UIView {
+extension UIImageView {
     
     func fadeLayer(withTransform transform: CATransform3D) -> CALayer {
         

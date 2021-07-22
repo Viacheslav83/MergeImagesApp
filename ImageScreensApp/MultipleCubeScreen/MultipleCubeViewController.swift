@@ -11,7 +11,7 @@ class MultipleCubeViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     
-    let colorArray: [UIColor] = [.red, .green, .yellow, .orange, .brown, .blue, .cyan, .magenta, .purple]
+    let imageStringList = ["img1", "img2", "img3", "img4", "img5", "img6", "img7", "img8", "img9"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,14 +19,9 @@ class MultipleCubeViewController: UIViewController {
         setupCollectionView()
     }
     
-//    override func viewDidLayoutSubviews() {
-//        collectionView.layoutIfNeeded()
-//    }
-    
     private func setupCollectionView() {
         collectionView.delegate = self
         collectionView.dataSource = self
-        
         
         let leftLayout = UICollectionViewFlowLayout()
         leftLayout.scrollDirection = .vertical
@@ -37,20 +32,18 @@ class MultipleCubeViewController: UIViewController {
 }
 
 extension MultipleCubeViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.reloadItems(at: [indexPath])
-//        collectionView.reloadData()
-    }
+ 
 }
 
 extension MultipleCubeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return colorArray.count
+        return imageStringList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCollectionViewCell.identifier, for: indexPath) as? ImageCollectionViewCell else { return UICollectionViewCell() }
-        cell.configure(with: indexPath.row)
+        let image = UIImage(named: imageStringList[indexPath.row])
+        cell.configure(with: image ?? UIImage())
         return cell
     }
 }

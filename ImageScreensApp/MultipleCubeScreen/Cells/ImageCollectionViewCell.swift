@@ -9,98 +9,98 @@ import UIKit
 
 class ImageCollectionViewCell: UICollectionViewCell {
     
-    @IBOutlet weak var ownView: UIView!
+    @IBOutlet weak var imageView: UIImageView!
     
     let imageStringList = ["img1", "img2", "img3", "img4", "img5", "img6", "img7", "img8", "img9"]
-    let colorArray: [UIColor] = [.red, .green, .yellow, .orange, .brown, .blue, .cyan, .magenta, .purple]
     
     static var identifier = "ImageCollectionViewCell"
     let cubeTranslation = CubeTransition()
-    var subMenu: UIView?
     var direction: CubeTransitionDirection?
+    var sideImageView: UIImageView?
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        setupGesture()
+        setupSwipe()
     }
     
     override func prepareForReuse() {
-        ownView.backgroundColor = .white
+ 
     }
     
     static func nib() -> UINib {
         return UINib(nibName: identifier, bundle: nil)
     }
     
-    func configure(with index: Int) {
-        ownView.backgroundColor = colorArray[index]
+    func configure(with image: UIImage) {
+        imageView.image = image
     }
     
-    private func setupGesture() {
-        let swipeRightGesture = UISwipeGestureRecognizer(target: self, action: #selector(rotateView))
-        swipeRightGesture.direction = .right
+    private func setupSwipe() {
+        // Defining the Various Swipe directions (left, right, up, down)
+        let swipeLeft = UISwipeGestureRecognizer(target: self,
+                                                 action: #selector(self.handleGesture(gesture:)))
+        swipeLeft.direction = .left
+        self.contentView.addGestureRecognizer(swipeLeft)
         
-        let swipeLeftGesture = UISwipeGestureRecognizer(target: self, action: #selector(rotateView))
-        swipeLeftGesture.direction = .left
+        let swipeRight = UISwipeGestureRecognizer(target: self,
+                                                  action: #selector(self.handleGesture(gesture:)))
+        swipeRight.direction = .right
+        self.contentView.addGestureRecognizer(swipeRight)
         
-        let swipeUpGesture = UISwipeGestureRecognizer(target: self, action: #selector(rotateView))
-        swipeUpGesture.direction = .up
+        let swipeUp = UISwipeGestureRecognizer(target: self,
+                                               action: #selector(self.handleGesture(gesture:)))
+        swipeUp.direction = .up
+        self.contentView.addGestureRecognizer(swipeUp)
         
-        let swipeDownGesture = UISwipeGestureRecognizer(target: self, action: #selector(rotateView))
-        swipeDownGesture.direction = .down
-        
-        ownView.addGestureRecognizer(swipeRightGesture)
-        ownView.addGestureRecognizer(swipeLeftGesture)
-        ownView.addGestureRecognizer(swipeUpGesture)
-        ownView.addGestureRecognizer(swipeDownGesture)
+        let swipeDown = UISwipeGestureRecognizer(target: self,
+                                                 action: #selector(self.handleGesture(gesture:)))
+        swipeDown.direction = .down
+        self.contentView.addGestureRecognizer(swipeDown)
     }
     
     @objc
-    func rotateView(_ sender: UISwipeGestureRecognizer) {
-        if (subMenu == nil) {
-            subMenu = UIView.init(frame: ownView!.bounds)
+    func handleGesture(gesture: UISwipeGestureRecognizer) {
+        if gesture.direction == UISwipeGestureRecognizer.Direction.right {
+            direction = .right
+        } else if gesture.direction == UISwipeGestureRecognizer.Direction.left {
+            direction = .left
+        } else if gesture.direction == UISwipeGestureRecognizer.Direction.up {
+            direction = .up
+        } else if gesture.direction == UISwipeGestureRecognizer.Direction.down {
+            direction = .down
+        }
+        rotateView()
+    }
+    
+    private func rotateView() {
+        if (sideImageView == nil) {
+            sideImageView = UIImageView.init(frame: contentView.bounds)
         } else {
-            subMenu!.removeFromSuperview()
+            sideImageView!.removeFromSuperview()
         }
         
-        let randomNumber: Int! = (0..<colorArray.count).randomElement()
-        
-        setupDirection(sender)
+        let randomNumber: Int! = (0..<imageStringList.count).randomElement()
+        guard let image = UIImage(named: imageStringList[randomNumber]) else { return }
         
         switch direction {
         case .down:
-            subMenu!.backgroundColor = colorArray[randomNumber]
+            sideImageView!.image = image
         case .up:
-            subMenu!.backgroundColor = colorArray[randomNumber]
+            sideImageView!.image = image
         case .left:
-            subMenu!.backgroundColor = colorArray[randomNumber]
+            sideImageView!.image = image
         case .right:
-            subMenu!.backgroundColor = colorArray[randomNumber]
+            sideImageView!.image = image
         default:
             break
         }
-        
-        cubeTranslation.translateView( ownView!,
-                                      toView: subMenu!,
+
+        cubeTranslation.translateView( imageView,
+                                      toView: sideImageView!,
                                       direction: direction!,
                                       duration: 0.5) { [weak self] (displayView) in
             guard let self = self else { return }
-            self.ownView.backgroundColor = displayView.backgroundColor
-        }
-        
-    }
-    
-    private func setupDirection(_ sender: UISwipeGestureRecognizer) {
-        switch sender.direction {
-        case .down:
-            direction = .down
-        case .up:
-            direction = .up
-        case .right:
-            direction = .right
-        case .left:
-            direction = .left
-        default: break
+            self.imageView.image = displayView.image
         }
     }
 }

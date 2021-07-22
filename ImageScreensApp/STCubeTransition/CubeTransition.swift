@@ -34,14 +34,14 @@ public enum CubeTransitionDirection: Int {
 
 open class CubeTransition: UICollectionViewCell, CAAnimationDelegate {
     
-    private var focalLength:Double = 0.0
-    private var translationQueue = [UIView: Transition]()
+    private var focalLength: Double = 0.0
+    private var translationQueue = [UIImageView: Transition]()
     
-    public func translateView(_ fromView: UIView,
-                              toView: UIView,
+    public func translateView(_ fromView: UIImageView,
+                              toView: UIImageView,
                               direction: CubeTransitionDirection,
                               duration: Float,
-                              completion: @escaping (_ displayView: UIView) -> ()) {
+                              completion: @escaping (_ displayView: UIImageView) -> ()) {
         
         if translationQueue.keys.contains(fromView) {
             return
@@ -49,9 +49,10 @@ open class CubeTransition: UICollectionViewCell, CAAnimationDelegate {
         
         focalLength = kDefaultFocalLength
         
-        let overlayView = UIView.init(frame: CGRect.init(origin: CGPoint.zero, size: fromView.frame.size))
+        let overlayView = UIImageView.init(frame: CGRect.init(origin: CGPoint.zero, size: fromView.frame.size))
         overlayView.alpha = 0
-        overlayView.backgroundColor = fromView.superview?.backgroundColor
+        overlayView.image = fromView.image
+        
         fromView.addSubview(overlayView)
         
         let transition = Transition(fromView, toView: toView, overlayView: overlayView, completion: completion)
@@ -59,7 +60,7 @@ open class CubeTransition: UICollectionViewCell, CAAnimationDelegate {
         let animationLayer = CALayer.init()
         animationLayer.frame = fromView.bounds
         
-        var sublayerTransform:CATransform3D = CATransform3DIdentity
+        var sublayerTransform: CATransform3D = CATransform3DIdentity
         sublayerTransform.m34 = CGFloat(1.0 / (-focalLength))
         animationLayer.sublayerTransform = sublayerTransform
         fromView.layer.addSublayer(animationLayer)
@@ -95,7 +96,10 @@ open class CubeTransition: UICollectionViewCell, CAAnimationDelegate {
         rotateInDirection(transition: transition, direction: direction, animationLayer: animationLayer, duration: duration)
     }
     
-    fileprivate func rotateInDirection(transition: Transition, direction: CubeTransitionDirection, animationLayer: CALayer, duration: Float) {
+    fileprivate func rotateInDirection(transition: Transition,
+                                       direction: CubeTransitionDirection,
+                                       animationLayer: CALayer,
+                                       duration: Float) {
         
         CATransaction.flush()
         var rotation: CABasicAnimation?
@@ -163,7 +167,7 @@ open class CubeTransition: UICollectionViewCell, CAAnimationDelegate {
 // MARK: CAAnimation delegate methods
     public func animationDidStop(_ animation: CAAnimation, finished: Bool) {
 
-        guard let fromView = animation.value(forKey: fromViewKey) as? UIView else {
+        guard let fromView = animation.value(forKey: fromViewKey) as? UIImageView else {
             return
         }
 
@@ -177,10 +181,8 @@ open class CubeTransition: UICollectionViewCell, CAAnimationDelegate {
         let contentView = transition.toView
         contentView.frame = fromView.frame
 
-        fromView.backgroundColor = transition.backgroundColor
-
         if let superview = fromView.superview {
-            if superview.subviews.contains(contentView) == false {
+            if subviews.contains(UIView()) == false {
                 superview.addSubview(contentView)
             } else {
                 superview.bringSubviewToFront(contentView)

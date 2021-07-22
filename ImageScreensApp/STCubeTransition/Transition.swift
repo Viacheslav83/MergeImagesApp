@@ -9,10 +9,9 @@ import UIKit
 
 class Transition {
     
-    let fromView: UIView
-    let toView: UIView
-    let overlayView: UIView
-    let backgroundColor: UIColor
+    let fromView: UIImageView
+    let toView: UIImageView
+    let overlayView: UIImageView
     
     var animationLayer: CALayer?
     
@@ -20,17 +19,16 @@ class Transition {
      * Completion closure that will get called every time
      * when the view transition is finished with contentView parameter
      */
-    let completionHandler: (_ displayView: UIView) -> Void
+    let completionHandler: (_ displayView: UIImageView) -> Void
     
-    init(_ fromView: UIView,
-         toView: UIView,
-         overlayView: UIView,
-         completion: @escaping (_ displayView: UIView) -> ())
+    init(_ fromView: UIImageView,
+         toView: UIImageView,
+         overlayView: UIImageView,
+         completion: @escaping (_ displayView: UIImageView) -> ())
     {
         self.fromView = fromView
         self.toView = toView
         self.overlayView = overlayView
-        self.backgroundColor = fromView.backgroundColor ?? .blue
         self.completionHandler = completion
     }
 }

@@ -7,16 +7,29 @@
 
 import UIKit
 
+protocol ImageCollectionViewCellDelegate: AnyObject {
+    func didTappedImage(_ sender: UICollectionViewCell, at imageString: String, with index: Int)
+}
+
 class ImageCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var imageView: UIImageView!
     
-    let imageStringList = ["img1", "img2", "img3", "img4", "img5", "img6", "img7", "img8", "img9"]
-    
+    let imageStringList = ["avatar_part_001", "avatar_part_002", "avatar_part_003",
+                           "avatar_part_004", "avatar_part_005", "avatar_part_006",
+                           "avatar_part_007", "avatar_part_008", "avatar_part_009"]
     static var identifier = "ImageCollectionViewCell"
+    
     let cubeTranslation = CubeTransition()
     var direction: CubeTransitionDirection?
     var sideImageView: UIImageView?
+    
+    var completion: ((String, Int) -> Void)?
+    var selectedIndexCell: Int?
+    var nextIndex: Int?
+    
+    var currentImageString = ""
+    weak var delegate: ImageCollectionViewCellDelegate?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -24,28 +37,21 @@ class ImageCollectionViewCell: UICollectionViewCell {
     }
     
     override func prepareForReuse() {
- 
+        imageView.image = nil
     }
     
     static func nib() -> UINib {
         return UINib(nibName: identifier, bundle: nil)
     }
     
-    func configure(with image: UIImage) {
-        imageView.image = image
+    func configure(with imageString: String, at index: Int) {
+        imageView.image = UIImage(named: imageString)
+        currentImageString = imageString
+        selectedIndexCell = index
     }
     
     private func setupSwipe() {
         // Defining the Various Swipe directions (left, right, up, down)
-        let swipeLeft = UISwipeGestureRecognizer(target: self,
-                                                 action: #selector(self.handleGesture(gesture:)))
-        swipeLeft.direction = .left
-        self.contentView.addGestureRecognizer(swipeLeft)
-        
-        let swipeRight = UISwipeGestureRecognizer(target: self,
-                                                  action: #selector(self.handleGesture(gesture:)))
-        swipeRight.direction = .right
-        self.contentView.addGestureRecognizer(swipeRight)
         
         let swipeUp = UISwipeGestureRecognizer(target: self,
                                                action: #selector(self.handleGesture(gesture:)))
@@ -56,20 +62,25 @@ class ImageCollectionViewCell: UICollectionViewCell {
                                                  action: #selector(self.handleGesture(gesture:)))
         swipeDown.direction = .down
         self.contentView.addGestureRecognizer(swipeDown)
+        
+        let longPressGesture = UILongPressGestureRecognizer(target: self,
+                                                 action: #selector(self.handleTapGesture(gesture:)))
+        self.contentView.addGestureRecognizer(longPressGesture)
     }
     
     @objc
     func handleGesture(gesture: UISwipeGestureRecognizer) {
-        if gesture.direction == UISwipeGestureRecognizer.Direction.right {
-            direction = .right
-        } else if gesture.direction == UISwipeGestureRecognizer.Direction.left {
-            direction = .left
-        } else if gesture.direction == UISwipeGestureRecognizer.Direction.up {
+        if gesture.direction == UISwipeGestureRecognizer.Direction.up {
             direction = .up
         } else if gesture.direction == UISwipeGestureRecognizer.Direction.down {
             direction = .down
         }
         rotateView()
+    }
+    
+    @objc
+    func handleTapGesture(gesture: UISwipeGestureRecognizer) {
+        delegate?.didTappedImage(self, at: currentImageString, with: selectedIndexCell ?? 0)
     }
     
     private func rotateView() {
@@ -79,28 +90,29 @@ class ImageCollectionViewCell: UICollectionViewCell {
             sideImageView!.removeFromSuperview()
         }
         
-        let randomNumber: Int! = (0..<imageStringList.count).randomElement()
-        guard let image = UIImage(named: imageStringList[randomNumber]) else { return }
-        
+        guard let currentIndex = imageStringList.firstIndex(of: currentImageString) else { return }
+
         switch direction {
         case .down:
+            nextIndex = imageStringList.getPreviousIndex(currentIndex)
+            guard let image = UIImage(named: imageStringList[nextIndex ?? 0]) else { return }
             sideImageView!.image = image
         case .up:
-            sideImageView!.image = image
-        case .left:
-            sideImageView!.image = image
-        case .right:
+            nextIndex = imageStringList.getNextIndex(currentIndex)
+            guard let image = UIImage(named: imageStringList[nextIndex ?? 0]) else { return }
             sideImageView!.image = image
         default:
             break
         }
 
-        cubeTranslation.translateView( imageView,
+        cubeTranslation.translateView(imageView,
                                       toView: sideImageView!,
                                       direction: direction!,
                                       duration: 0.5) { [weak self] (displayView) in
             guard let self = self else { return }
             self.imageView.image = displayView.image
+            self.currentImageString = self.imageStringList[self.nextIndex ?? 0]
         }
+        completion?(imageStringList[nextIndex ?? 0], selectedIndexCell ?? 0)
     }
 }

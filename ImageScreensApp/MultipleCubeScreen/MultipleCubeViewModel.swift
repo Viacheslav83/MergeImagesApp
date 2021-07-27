@@ -29,7 +29,8 @@ class MultipleCubeViewModel {
         selectedIndexCell = index
     }
     
-//    func setIndexImage(at index: Int) {
-//        selectedIndexImage = index
-//    }
+    func isEqualTwoArrays() -> Bool {
+        return originImageStringList == imageStringList
+    }
+
 }

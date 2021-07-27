@@ -15,6 +15,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var imageView: UIImageView!
     
+    
     let imageStringList = ["avatar_part_001", "avatar_part_002", "avatar_part_003",
                            "avatar_part_004", "avatar_part_005", "avatar_part_006",
                            "avatar_part_007", "avatar_part_008", "avatar_part_009"]
@@ -108,7 +109,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         cubeTranslation.translateView(imageView,
                                       toView: sideImageView!,
                                       direction: direction!,
-                                      duration: 0.5) { [weak self] (displayView) in
+                                      duration: Constants.duration) { [weak self] (displayView) in
             guard let self = self else { return }
             self.imageView.image = displayView.image
             self.currentImageString = self.imageStringList[self.nextIndex ?? 0]

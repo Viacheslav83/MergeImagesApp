@@ -95,7 +95,7 @@ class PopUpViewController: UIViewController {
         cubeTranslation.translateView( imageView,
                                       toView: sideImageView!,
                                       direction: direction!,
-                                      duration: 0.5) { [weak self] (displayView) in
+                                      duration: Constants.duration) { [weak self] (displayView) in
             guard let self = self else { return }
             self.imageView.image = displayView.image
             self.popUpViewModel.setImageString(with: nextImageString)

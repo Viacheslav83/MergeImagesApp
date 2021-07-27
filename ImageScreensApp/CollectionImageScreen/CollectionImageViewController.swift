@@ -7,11 +7,6 @@
 
 import UIKit
 
-struct Constants {
-    static let spacing: CGFloat = 4
-    static let loopingMargin: Int = 100
-}
-
 class CollectionImageViewController: UIViewController {
 
     @IBOutlet weak var rightCollectionView: UICollectionView!

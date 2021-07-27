@@ -25,7 +25,6 @@ class MultipleCubeViewController: UIViewController {
         collectionView.dataSource = self
         
         let leftLayout = UICollectionViewFlowLayout()
-        leftLayout.scrollDirection = .vertical
         collectionView.collectionViewLayout = leftLayout
         collectionView.register(ImageCollectionViewCell.nib(),
                                 forCellWithReuseIdentifier: ImageCollectionViewCell.identifier)
@@ -60,15 +59,19 @@ extension MultipleCubeViewController: UICollectionViewDataSource {
 
 extension MultipleCubeViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let height = (self.collectionView.bounds.height - 2 * Constants.spacing) / 3
-        return CGSize(width: height, height: height)
+        let countCellInRow = CGFloat(sqrt(Double(multipleCubeViewModel.imageStringList.count)))
+//        let width = ((self.collectionView.bounds.width - (countCellInRow - 1) * Constants.spacing) / countCellInRow) - Constants.spacing
+//        let height = ((self.collectionView.bounds.height - countCellInRow * Constants.spacing) / countCellInRow)
+        let width = (self.collectionView.bounds.width - 3 * Constants.spacing - 2) / 3
+                print(width)
+        return CGSize(width: width, height: width)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: Constants.spacing,
-                            left: 0,
-                            bottom: Constants.spacing,
-                            right: 0)
+        return UIEdgeInsets(top: 0,
+                            left: Constants.spacing / 2,
+                            bottom: 0,
+                            right: Constants.spacing / 2)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {

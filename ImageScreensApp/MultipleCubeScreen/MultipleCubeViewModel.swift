@@ -14,9 +14,13 @@ class MultipleCubeViewModel {
                                  "avatar_part_007", "avatar_part_008", "avatar_part_009"]
     var imageStringList = [String]()
     var selectedIndexCell: Int?
+    var spacing = Constants.spacing
     
     init () {
-        imageStringList = originImageStringList.shuffled()
+//        imageStringList = originImageStringList.shuffled()
+        imageStringList = ["avatar_part_002", "avatar_part_001", "avatar_part_003",
+                           "avatar_part_004", "avatar_part_005", "avatar_part_006",
+                           "avatar_part_007", "avatar_part_008", "avatar_part_009"]
     }
     
     func setNewImage(with imageName: String) {
@@ -32,5 +36,8 @@ class MultipleCubeViewModel {
     func isEqualTwoArrays() -> Bool {
         return originImageStringList == imageStringList
     }
-
+    
+    func setFullPhoto() {
+        spacing = 0
+    }
 }

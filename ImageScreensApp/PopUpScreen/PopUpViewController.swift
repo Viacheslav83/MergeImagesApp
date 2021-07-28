@@ -62,7 +62,9 @@ class PopUpViewController: UIViewController {
     
     @objc
     func handleTapGesture(gesture: UISwipeGestureRecognizer) {
-        completion?(self.popUpViewModel.selectedImageString, self.popUpViewModel.indexCell)
+        if popUpViewModel.indexCell != popUpViewModel.imageStringList.count - 1 {
+            completion?(self.popUpViewModel.selectedImageString, self.popUpViewModel.indexCell)
+        }
         dismiss(animated: true, completion: nil)
     }
     
@@ -79,12 +81,12 @@ class PopUpViewController: UIViewController {
         
         switch direction {
         case .left:
-            nextIndex = popUpViewModel.imageStringList.getPreviousIndex(currentIndex)
+            nextIndex = popUpViewModel.imageStringList.getNextIndex(currentIndex)
             nextImageString = popUpViewModel.imageStringList[nextIndex]
             guard let image = UIImage(named: nextImageString) else { return }
             sideImageView!.image = image
         case .right:
-            nextIndex = popUpViewModel.imageStringList.getNextIndex(currentIndex)
+            nextIndex = popUpViewModel.imageStringList.getPreviousIndex(currentIndex)
             nextImageString = popUpViewModel.imageStringList[nextIndex]
             guard let image = UIImage(named: nextImageString) else { return }
             sideImageView!.image = image
@@ -99,6 +101,9 @@ class PopUpViewController: UIViewController {
             guard let self = self else { return }
             self.imageView.image = displayView.image
             self.popUpViewModel.setImageString(with: nextImageString)
+        }
+        if popUpViewModel.indexCell != popUpViewModel.imageStringList.count - 1 {
+            completion?(nextImageString, popUpViewModel.indexCell)
         }
     }
 }

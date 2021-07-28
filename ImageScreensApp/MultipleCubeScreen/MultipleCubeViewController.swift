@@ -9,7 +9,7 @@ import UIKit
 
 class MultipleCubeViewController: UIViewController {
     
-    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var imageCollectionView: UICollectionView!
 
     var multipleCubeViewModel = MultipleCubeViewModel()
     var selectedImage: UIImage?
@@ -21,18 +21,27 @@ class MultipleCubeViewController: UIViewController {
     }
     
     private func setupCollectionView() {
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        
-        let leftLayout = UICollectionViewFlowLayout()
-        collectionView.collectionViewLayout = leftLayout
-        collectionView.register(ImageCollectionViewCell.nib(),
+        imageCollectionView.delegate = self
+        imageCollectionView.dataSource = self
+        let layout = UICollectionViewFlowLayout()
+        imageCollectionView.collectionViewLayout = layout
+        imageCollectionView.register(ImageCollectionViewCell.nib(),
                                 forCellWithReuseIdentifier: ImageCollectionViewCell.identifier)
+    }
+    
+    private func animateCollectionView(_ collectionView: UICollectionView) {
+        for index in 0..<self.multipleCubeViewModel.imageStringList.count {
+            UIView.animate(withDuration: 1) {
+                let cell = collectionView.cellForItem(at: IndexPath(row: index, section: 0))
+                let side = self.imageCollectionView.bounds.height / 3
+                cell?.bounds.size = CGSize(width: side, height: side)
+            }
+        }
     }
 }
 
 extension MultipleCubeViewController: UICollectionViewDelegate {
-
+    
 }
 
 extension MultipleCubeViewController: UICollectionViewDataSource {
@@ -42,41 +51,50 @@ extension MultipleCubeViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCollectionViewCell.identifier, for: indexPath) as? ImageCollectionViewCell else { return UICollectionViewCell() }
+        
+
+        
         cell.delegate = self
-        cellCompletion(cell)
+        cellCompletion(cell, collectionView)
         let indexCell = indexPath.row
         cell.configure(with: multipleCubeViewModel.imageStringList[indexCell], at: indexCell)
+        
         return cell
     }
     
-    private func cellCompletion(_ sender: ImageCollectionViewCell) {
+    private func cellCompletion(_ sender: ImageCollectionViewCell, _ collectionView: UICollectionView) {
         sender.completion = { [self] imageString, indexCell in
             self.multipleCubeViewModel.setIndexCell(at: indexCell)
             self.multipleCubeViewModel.setNewImage(with: imageString)
+            
+            if multipleCubeViewModel.isEqualTwoArrays() {
+                animateCollectionView(collectionView)
+            }
         }
     }
 }
 
 extension MultipleCubeViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let countCellInRow = CGFloat(sqrt(Double(multipleCubeViewModel.imageStringList.count)))
-//        let width = ((self.collectionView.bounds.width - (countCellInRow - 1) * Constants.spacing) / countCellInRow) - Constants.spacing
-//        let height = ((self.collectionView.bounds.height - countCellInRow * Constants.spacing) / countCellInRow)
-        let width = (self.collectionView.bounds.width - 3 * Constants.spacing - 2) / 3
-                print(width)
-        return CGSize(width: width, height: width)
+        let side = (imageCollectionView.bounds.width - 2 * Constants.spacing - 2 * Constants.sideSpacing) / 3
+        return CGSize(width: side, height: side)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0,
-                            left: Constants.spacing / 2,
+        return UIEdgeInsets(top: Constants.sideSpacing,
+                            left: Constants.sideSpacing,
                             bottom: 0,
-                            right: Constants.spacing / 2)
+                            right: Constants.sideSpacing)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return Constants.spacing
     }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return Constants.spacing
+    }
+    
 }
 
 extension MultipleCubeViewController: ImageCollectionViewCellDelegate {
@@ -98,7 +116,11 @@ extension MultipleCubeViewController: ImageCollectionViewCellDelegate {
             self.multipleCubeViewModel.setIndexCell(at: indexCell)
             self.multipleCubeViewModel.setNewImage(with: imageString)
             let indexPath = IndexPath(item: indexCell, section: 0)
-            self.collectionView.reloadItems(at: [indexPath])
+            self.imageCollectionView.reloadItems(at: [indexPath])
+            
+            if self.multipleCubeViewModel.isEqualTwoArrays() {
+                self.animateCollectionView(self.imageCollectionView)
+            }
         }
     }
 }

@@ -8,28 +8,25 @@
 import UIKit
 
 protocol ImageCollectionViewCellDelegate: AnyObject {
-    func didTappedImage(_ sender: UICollectionViewCell, at imageString: String, with index: Int)
+    func didTappedImage(_ sender: UICollectionViewCell, at imageName: String, with indexCell: Int)
 }
 
 class ImageCollectionViewCell: UICollectionViewCell {
     
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet private weak var imageView: UIImageView!
     
+    private var listImageNames = [String]()
+    static let identifier = "ImageCollectionViewCell"
     
-    let imageStringList = ["avatar_part_001", "avatar_part_002", "avatar_part_003",
-                           "avatar_part_004", "avatar_part_005", "avatar_part_006",
-                           "avatar_part_007", "avatar_part_008", "avatar_part_009"]
-    static var identifier = "ImageCollectionViewCell"
+    private let cubeTranslation = CubeTransition()
+    private var direction: CubeTransitionDirection?
+    private var sideImageView: UIImageView?
     
-    let cubeTranslation = CubeTransition()
-    var direction: CubeTransitionDirection?
-    var sideImageView: UIImageView?
+    var completion: ((_ imageName: String, _ selectedIndexCell: Int) -> Void)?
+    private var selectedIndexCell: Int?
+    private var nextIndexImageName: Int?
     
-    var completion: ((String, Int) -> Void)?
-    var selectedIndexCell: Int?
-    var nextIndex: Int?
-    
-    var currentImageString = ""
+    private var currentImageName = ""
     weak var delegate: ImageCollectionViewCellDelegate?
     
     override func awakeFromNib() {
@@ -39,38 +36,35 @@ class ImageCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         imageView.image = nil
+        listImageNames = [""]
     }
     
-    static func nib() -> UINib {
-        return UINib(nibName: identifier, bundle: nil)
-    }
-    
-    func configure(with imageString: String, at index: Int) {
-        imageView.image = UIImage(named: imageString)
-        currentImageString = imageString
+    func setup(with imageName: String, at index: Int, from list: [String]) {
+        imageView.image = UIImage(named: imageName)
+        currentImageName = imageName
+        listImageNames = list
         selectedIndexCell = index
     }
     
     private func setupSwipe() {
-        // Defining the Various Swipe directions (left, right, up, down)
         
         let swipeUp = UISwipeGestureRecognizer(target: self,
-                                               action: #selector(self.handleGesture(gesture:)))
+                                               action: #selector(self.handleSwipe(gesture:)))
         swipeUp.direction = .up
         self.contentView.addGestureRecognizer(swipeUp)
         
         let swipeDown = UISwipeGestureRecognizer(target: self,
-                                                 action: #selector(self.handleGesture(gesture:)))
+                                                 action: #selector(self.handleSwipe(gesture:)))
         swipeDown.direction = .down
         self.contentView.addGestureRecognizer(swipeDown)
         
-        let longPressGesture = UILongPressGestureRecognizer(target: self,
-                                                 action: #selector(self.handleTapGesture(gesture:)))
-        self.contentView.addGestureRecognizer(longPressGesture)
+        let longPress = UILongPressGestureRecognizer(target: self,
+                                                 action: #selector(self.handleLongPress(gesture:)))
+        self.contentView.addGestureRecognizer(longPress)
     }
     
     @objc
-    func handleGesture(gesture: UISwipeGestureRecognizer) {
+    private func handleSwipe(gesture: UISwipeGestureRecognizer) {
         if gesture.direction == UISwipeGestureRecognizer.Direction.up {
             direction = .up
         } else if gesture.direction == UISwipeGestureRecognizer.Direction.down {
@@ -80,8 +74,8 @@ class ImageCollectionViewCell: UICollectionViewCell {
     }
     
     @objc
-    func handleTapGesture(gesture: UISwipeGestureRecognizer) {
-        delegate?.didTappedImage(self, at: currentImageString, with: selectedIndexCell ?? 0)
+    private func handleLongPress(gesture: UISwipeGestureRecognizer) {
+        delegate?.didTappedImage(self, at: currentImageName, with: selectedIndexCell ?? 0)
     }
     
     private func rotateView() {
@@ -91,16 +85,16 @@ class ImageCollectionViewCell: UICollectionViewCell {
             sideImageView!.removeFromSuperview()
         }
         
-        guard let currentIndex = imageStringList.firstIndex(of: currentImageString) else { return }
+        guard let currentIndex = listImageNames.firstIndex(of: currentImageName) else { return }
 
         switch direction {
         case .down:
-            nextIndex = imageStringList.getPreviousIndex(currentIndex)
-            guard let image = UIImage(named: imageStringList[nextIndex ?? 0]) else { return }
+            nextIndexImageName = listImageNames.getPreviousIndex(currentIndex)
+            guard let image = UIImage(named: listImageNames[nextIndexImageName ?? 0]) else { return }
             sideImageView!.image = image
         case .up:
-            nextIndex = imageStringList.getNextIndex(currentIndex)
-            guard let image = UIImage(named: imageStringList[nextIndex ?? 0]) else { return }
+            nextIndexImageName = listImageNames.getNextIndex(currentIndex)
+            guard let image = UIImage(named: listImageNames[nextIndexImageName ?? 0]) else { return }
             sideImageView!.image = image
         default:
             break
@@ -112,8 +106,8 @@ class ImageCollectionViewCell: UICollectionViewCell {
                                       duration: Constants.duration) { [weak self] (displayView) in
             guard let self = self else { return }
             self.imageView.image = displayView.image
-            self.currentImageString = self.imageStringList[self.nextIndex ?? 0]
+            self.currentImageName = self.listImageNames[self.nextIndexImageName ?? 0]
         }
-        completion?(imageStringList[nextIndex ?? 0], selectedIndexCell ?? 0)
+        completion?(listImageNames[nextIndexImageName ?? 0], selectedIndexCell ?? 0)
     }
 }

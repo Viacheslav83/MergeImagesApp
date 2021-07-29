@@ -1,5 +1,5 @@
 //
-//  Extension+UIView.swift
+//  Extension+UIImageView.swift
 //  ImageScreensApp
 //
 //  Created by Viacheslav Markov on 21.07.2021.

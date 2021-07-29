@@ -9,24 +9,23 @@ import Foundation
 
 class PopUpViewModel {
     
-    let imageStringList = ["avatar_part_001", "avatar_part_002", "avatar_part_003",
-                           "avatar_part_004", "avatar_part_005", "avatar_part_006",
-                           "avatar_part_007", "avatar_part_008", "avatar_part_009"]
-    var selectedImageString: String
-    var nextIndex: Int?
+    let originListImageNames: [String]
+    var selectedImageName: String
+    private var nextIndexImageName: Int?
     var indexCell: Int
     
-    init(selectedImageString: String, indexCell: Int) {
+    init(selectedImageString: String, indexCell: Int, originImageStringList: [String]) {
         self.indexCell = indexCell
-        self.selectedImageString = selectedImageString
+        self.selectedImageName = selectedImageString
+        self.originListImageNames = originImageStringList
     }
     
     func setImageString(with imageString: String) {
-        selectedImageString = imageString
+        selectedImageName = imageString
     }
     
     func setNextIndex(with index: Int) -> Int {
-        nextIndex = index
-        return nextIndex ?? 0
+        nextIndexImageName = index
+        return nextIndexImageName ?? 0
     }
 }

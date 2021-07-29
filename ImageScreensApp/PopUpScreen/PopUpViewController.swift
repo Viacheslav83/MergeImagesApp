@@ -9,21 +9,20 @@ import UIKit
 
 class PopUpViewController: UIViewController {
     
-    @IBOutlet weak var contentView: UIView!
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet private weak var contentView: UIView!
+    @IBOutlet private weak var imageView: UIImageView!
     
-    let cubeTranslation = CubeTransition()
-    var direction: CubeTransitionDirection?
-    var sideImageView: UIImageView?
+    private let cubeTranslation = CubeTransition()
+    private var direction: CubeTransitionDirection?
+    private var sideImageView: UIImageView?
     
-    var completion: ((String, Int) -> Void)?
+    var completion: ((_ indexCell: String, _ indexCell: Int) -> Void)?
     var popUpViewModel: PopUpViewModel!
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        imageView.image = UIImage(named: popUpViewModel.selectedImageString)
+        imageView.image = UIImage(named: popUpViewModel.selectedImageName)
         contentView.layer.cornerRadius = 15
         setupSwipe()
     }
@@ -31,64 +30,65 @@ class PopUpViewController: UIViewController {
     private func setupSwipe() {
         
         let swipeLeft = UISwipeGestureRecognizer(target: self,
-                                                 action: #selector(self.handleGesture(gesture:)))
+                                                 action: #selector(handleSwipe(gesture:)))
         swipeLeft.direction = .left
         contentView.addGestureRecognizer(swipeLeft)
         
         let swipeRight = UISwipeGestureRecognizer(target: self,
-                                                  action: #selector(self.handleGesture(gesture:)))
+                                                  action: #selector(handleSwipe(gesture:)))
         swipeRight.direction = .right
         contentView.addGestureRecognizer(swipeRight)
         
         let swipeDown = UISwipeGestureRecognizer(target: self,
-                                                  action: #selector(self.handleTapGesture(gesture:)))
+                                                  action: #selector(handleLongPress(gesture:)))
         swipeDown.direction = .down
         contentView.addGestureRecognizer(swipeDown)
         
-        let longPressGesture = UILongPressGestureRecognizer(target: self,
-                                                 action: #selector(self.handleTapGesture(gesture:)))
-        self.contentView.addGestureRecognizer(longPressGesture)
+        let longPress = UILongPressGestureRecognizer(target: self,
+                                                 action: #selector(self.handleLongPress(gesture:)))
+        self.contentView.addGestureRecognizer(longPress)
     }
     
     @objc
-    func handleGesture(gesture: UISwipeGestureRecognizer) {
+    private func handleSwipe(gesture: UISwipeGestureRecognizer) {
         if gesture.direction == UISwipeGestureRecognizer.Direction.right {
             direction = .right
         } else if gesture.direction == UISwipeGestureRecognizer.Direction.left {
             direction = .left
         }
-        rotateView()
+        rotateImageView()
     }
     
     @objc
-    func handleTapGesture(gesture: UISwipeGestureRecognizer) {
-        if popUpViewModel.indexCell != popUpViewModel.imageStringList.count - 1 {
-            completion?(self.popUpViewModel.selectedImageString, self.popUpViewModel.indexCell)
+    private func handleLongPress(gesture: UISwipeGestureRecognizer) {
+        if let currentIndex = popUpViewModel.originListImageNames.firstIndex(of: popUpViewModel.selectedImageName),
+           popUpViewModel.indexCell == currentIndex {
+            completion?(self.popUpViewModel.selectedImageName, self.popUpViewModel.indexCell)
         }
         dismiss(animated: true, completion: nil)
     }
     
-    private func rotateView() {
+    private func rotateImageView() {
         if (sideImageView == nil) {
             sideImageView = UIImageView.init(frame: contentView.bounds)
         } else {
             sideImageView!.removeFromSuperview()
         }
         
-        guard let currentIndex = popUpViewModel.imageStringList.firstIndex(of: popUpViewModel.selectedImageString) else { return }
+        guard let currentIndex = popUpViewModel.originListImageNames.firstIndex(of: popUpViewModel.selectedImageName) else { return }
         var nextIndex: Int = -1
-        var nextImageString = ""
+        var nextImageName = ""
         
         switch direction {
         case .left:
-            nextIndex = popUpViewModel.imageStringList.getNextIndex(currentIndex)
-            nextImageString = popUpViewModel.imageStringList[nextIndex]
-            guard let image = UIImage(named: nextImageString) else { return }
+            nextIndex = popUpViewModel.originListImageNames.getNextIndex(currentIndex)
+            nextImageName = popUpViewModel.originListImageNames[nextIndex]
+            guard let image = UIImage(named: nextImageName) else { return }
             sideImageView!.image = image
         case .right:
-            nextIndex = popUpViewModel.imageStringList.getPreviousIndex(currentIndex)
-            nextImageString = popUpViewModel.imageStringList[nextIndex]
-            guard let image = UIImage(named: nextImageString) else { return }
+            nextIndex = popUpViewModel.originListImageNames.getPreviousIndex(currentIndex)
+            nextImageName = popUpViewModel.originListImageNames[nextIndex]
+            guard let image = UIImage(named: nextImageName) else { return }
             sideImageView!.image = image
         default:
             break
@@ -100,10 +100,11 @@ class PopUpViewController: UIViewController {
                                       duration: Constants.duration) { [weak self] (displayView) in
             guard let self = self else { return }
             self.imageView.image = displayView.image
-            self.popUpViewModel.setImageString(with: nextImageString)
+            self.popUpViewModel.setImageString(with: nextImageName)
         }
-        if popUpViewModel.indexCell != popUpViewModel.imageStringList.count - 1 {
-            completion?(nextImageString, popUpViewModel.indexCell)
+        
+        if popUpViewModel.indexCell != nextIndex {
+            completion?(nextImageName, popUpViewModel.indexCell)
         }
     }
 }

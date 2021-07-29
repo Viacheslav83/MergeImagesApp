@@ -9,35 +9,68 @@ import Foundation
 
 class MultipleCubeViewModel {
     
-    var originImageStringList = ["avatar_part_001", "avatar_part_002", "avatar_part_003",
-                                 "avatar_part_004", "avatar_part_005", "avatar_part_006",
-                                 "avatar_part_007", "avatar_part_008", "avatar_part_009"]
-    var imageStringList = [String]()
+    var originListImageNames: [String]
+    var listImageNames = [String]()
     var selectedIndexCell: Int?
-    var spacing = Constants.spacing
+
+    private var list = ListImageRepository()
     
     init () {
-//        imageStringList = originImageStringList.shuffled()
-        imageStringList = ["avatar_part_002", "avatar_part_001", "avatar_part_003",
-                           "avatar_part_004", "avatar_part_005", "avatar_part_006",
-                           "avatar_part_007", "avatar_part_008", "avatar_part_009"]
+        originListImageNames = list.avatar
+        listImageNames = list.avatar.shuffled()
     }
     
     func setNewImage(with imageName: String) {
         if let index = selectedIndexCell {
-            imageStringList[index] = imageName
+            listImageNames[index] = imageName
         }
     }
     
-    func setIndexCell(at index: Int) {
-        selectedIndexCell = index
+    func setIndexCell(at indexCell: Int) {
+        selectedIndexCell = indexCell
     }
     
     func isEqualTwoArrays() -> Bool {
-        return originImageStringList == imageStringList
+        return originListImageNames == listImageNames
     }
     
-    func setFullPhoto() {
-        spacing = 0
+    private func setNewListImageNames(with list: [String]) {
+        originListImageNames = list
+        listImageNames = list.shuffled()
+    }
+    
+    func getNumberOfLines() -> Int {
+        let count = sqrt(Double(originListImageNames.count))
+        return Int(count)
+    }
+    
+    func setListImageNames(with index: Int) {
+        switch index {
+        case 0:
+            setNewListImageNames(with: list.avatar)
+        case 1:
+            setNewListImageNames(with: list.pyramid)
+        case 2:
+            setNewListImageNames(with: list.redCharlie)
+        case 3:
+            setNewListImageNames(with: list.redCube)
+        default: break
+        }
+    }
+    
+    func getFullImage(at index: Int) -> String {
+        var imageName = ""
+        switch index {
+        case 0:
+            imageName = "avatar"
+        case 1:
+            imageName = "pyramid"
+        case 2:
+            imageName = "redCharlie"
+        case 3:
+            imageName = "redCube"
+        default: break
+        }
+        return imageName
     }
 }

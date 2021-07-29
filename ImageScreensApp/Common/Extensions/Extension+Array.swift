@@ -17,8 +17,4 @@ extension Array {
         let newIndex = index - 1
         return newIndex == -1 ? self.count - 1 : newIndex
     }
-    
-//    func setRandomArray() -> [Element] {
-//        return self.randomElement() as! [Element]
-//    }
 }

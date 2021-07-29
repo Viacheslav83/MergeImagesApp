@@ -16,45 +16,12 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
-                        <segue destination="jul-BA-Lci" kind="relationship" relationship="viewControllers" id="9KY-bl-CVc"/>
-                        <segue destination="oVi-Gg-BlN" kind="relationship" relationship="viewControllers" id="ZsX-2f-7rN"/>
-                        <segue destination="e2x-Nh-Q9S" kind="relationship" relationship="viewControllers" id="KfK-oQ-p88"/>
                         <segue destination="S3M-M8-O08" kind="relationship" relationship="viewControllers" id="IMH-OY-KDP"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="udV-eF-SxC" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-519" y="-861"/>
-        </scene>
-        <!--SingleImageViewController-->
-        <scene sceneID="sGf-Y1-JkJ">
-            <objects>
-                <viewControllerPlaceholder storyboardName="SingleImage" referencedIdentifier="SingleImageViewController" id="jul-BA-Lci" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="mZg-hU-gZS"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="qoL-5X-oRE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="147" y="-905"/>
-        </scene>
-        <!--DoubleImageViewController-->
-        <scene sceneID="lVy-zf-bqJ">
-            <objects>
-                <viewControllerPlaceholder storyboardName="DoubleImage" referencedIdentifier="DoubleImageViewController" id="oVi-Gg-BlN" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="WhO-UO-vEj"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="XEY-0s-uHs" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="151" y="-861"/>
-        </scene>
-        <!--CollectionImageViewController-->
-        <scene sceneID="Z4N-7c-H3B">
-            <objects>
-                <viewControllerPlaceholder storyboardName="CollectionImage" referencedIdentifier="CollectionImageViewController" id="e2x-Nh-Q9S" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="yyF-7x-OV2"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="KjO-7z-uaz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="164" y="-818"/>
+            <point key="canvasLocation" x="-565" y="-818"/>
         </scene>
         <!--MultipleCubeViewController-->
         <scene sceneID="XVq-Xs-hoW">
@@ -64,7 +31,7 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UXy-Ck-YD3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="226" y="-708"/>
+            <point key="canvasLocation" x="183" y="-818"/>
         </scene>
     </scenes>
 </document>

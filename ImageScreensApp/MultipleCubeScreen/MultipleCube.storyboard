@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" scrollEnabled="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="PGF-NM-Xdv">
-                                <rect key="frame" x="0.0" y="241" width="414" height="414"/>
+                                <rect key="frame" x="0.0" y="335" width="414" height="414"/>
                                 <color key="backgroundColor" systemColor="systemGray5Color"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="PGF-NM-Xdv" secondAttribute="height" multiplier="1:1" id="ivT-C5-4YA"/>
@@ -40,24 +40,50 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Cnm-9z-Ftj">
+                                <rect key="frame" x="0.0" y="76" width="414" height="32"/>
+                                <segments>
+                                    <segment title="Avatar 3X3"/>
+                                    <segment title="Piramida 3x3"/>
+                                    <segment title="Redcharlie 4x4"/>
+                                    <segment title="RedCube 4x4"/>
+                                </segments>
+                                <connections>
+                                    <action selector="segmentedControlTapped:" destination="Y6W-OH-hqX" eventType="valueChanged" id="Im4-KX-Z6C"/>
+                                </connections>
+                            </segmentedControl>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="bny-xu-99z">
+                                <rect key="frame" x="155.5" y="131" width="103.5" height="103.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="bny-xu-99z" secondAttribute="height" multiplier="1:1" id="73b-18-8im"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="PGF-NM-Xdv" firstAttribute="centerY" secondItem="5EZ-qb-Rvc" secondAttribute="centerY" id="LFH-hf-M6H"/>
+                            <constraint firstItem="Cnm-9z-Ftj" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="32" id="451-zm-syw"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="PGF-NM-Xdv" secondAttribute="bottom" constant="64" id="Dkx-En-32j"/>
+                            <constraint firstItem="bny-xu-99z" firstAttribute="top" secondItem="Cnm-9z-Ftj" secondAttribute="bottom" constant="24" id="Jza-1x-z2Q"/>
+                            <constraint firstItem="bny-xu-99z" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="Tkn-yC-PUc"/>
+                            <constraint firstItem="bny-xu-99z" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" multiplier="0.25" id="UAd-pZ-oDb"/>
                             <constraint firstItem="PGF-NM-Xdv" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="Ub4-Ur-jTP"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Cnm-9z-Ftj" secondAttribute="trailing" id="mSs-kf-4KG"/>
+                            <constraint firstItem="Cnm-9z-Ftj" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="ucg-Sc-wz9"/>
                             <constraint firstItem="PGF-NM-Xdv" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="vzA-PP-Ctr"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Multiple" id="DDE-MO-pGu"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="fullImageView" destination="bny-xu-99z" id="0jN-pR-yUT"/>
                         <outlet property="imageCollectionView" destination="PGF-NM-Xdv" id="fAZ-ug-QPQ"/>
+                        <outlet property="levelPageControl" destination="Cnm-9z-Ftj" id="dEi-Oi-F2X"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="97" y="42"/>
+            <point key="canvasLocation" x="95.652173913043484" y="41.517857142857139"/>
         </scene>
     </scenes>
     <resources>

@@ -32,7 +32,7 @@ public enum CubeTransitionDirection: Int {
     case right
 }
 
-open class CubeTransition: UIViewController, CAAnimationDelegate {
+final class CubeTransition: UIViewController, CAAnimationDelegate {
     
     private var focalLength: Double = 0.0
     private var translationQueue = [UIImageView: Transition]()

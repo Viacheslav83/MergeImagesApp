@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import  AudioToolbox
 
 protocol ImageCollectionViewCellDelegate: AnyObject {
     func didTappedImage(_ sender: UICollectionViewCell, at imageName: String, with indexCell: Int)
@@ -15,18 +16,14 @@ class ImageCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet private weak var imageView: UIImageView!
     
-    private var listImageNames = [String]()
     static let identifier = "ImageCollectionViewCell"
+    private var imageCellViewModel: ImageCellViewModel!
     
     private let cubeTranslation = CubeTransition()
     private var direction: CubeTransitionDirection?
     private var sideImageView: UIImageView?
     
     var completion: ((_ imageName: String, _ selectedIndexCell: Int) -> Void)?
-    private var selectedIndexCell: Int?
-    private var nextIndexImageName: Int?
-    
-    private var currentImageName = ""
     weak var delegate: ImageCollectionViewCellDelegate?
     
     override func awakeFromNib() {
@@ -34,16 +31,13 @@ class ImageCollectionViewCell: UICollectionViewCell {
         setupSwipe()
     }
     
-    override func prepareForReuse() {
-        imageView.image = nil
-        listImageNames = [""]
+    func setup(with imageCellViewModel: ImageCellViewModel) {
+        self.imageCellViewModel = imageCellViewModel
+        setupUI()
     }
     
-    func setup(with imageName: String, at index: Int, from list: [String]) {
-        imageView.image = UIImage(named: imageName)
-        currentImageName = imageName
-        listImageNames = list
-        selectedIndexCell = index
+    private func setupUI() {
+        imageView.image = UIImage(named: imageCellViewModel.currentImageName)
     }
     
     private func setupSwipe() {
@@ -59,7 +53,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         self.contentView.addGestureRecognizer(swipeDown)
         
         let longPress = UILongPressGestureRecognizer(target: self,
-                                                 action: #selector(self.handleLongPress(gesture:)))
+                                                     action: #selector(self.handleLongPress(gesture:)))
         self.contentView.addGestureRecognizer(longPress)
     }
     
@@ -75,39 +69,47 @@ class ImageCollectionViewCell: UICollectionViewCell {
     
     @objc
     private func handleLongPress(gesture: UISwipeGestureRecognizer) {
-        delegate?.didTappedImage(self, at: currentImageName, with: selectedIndexCell ?? 0)
+        delegate?.didTappedImage(self,
+                                 at: imageCellViewModel.currentImageName,
+                                 with: imageCellViewModel.selectedCellIndex)
     }
     
     private func rotateView() {
+        
+        var nextImageIndex = -1
+        
         if (sideImageView == nil) {
             sideImageView = UIImageView.init(frame: contentView.bounds)
         } else {
             sideImageView!.removeFromSuperview()
         }
         
-        guard let currentIndex = listImageNames.firstIndex(of: currentImageName) else { return }
-
         switch direction {
         case .down:
-            nextIndexImageName = listImageNames.getPreviousIndex(currentIndex)
-            guard let image = UIImage(named: listImageNames[nextIndexImageName ?? 0]) else { return }
-            sideImageView!.image = image
+            nextImageIndex = imageCellViewModel.getNextIndexImage()
         case .up:
-            nextIndexImageName = listImageNames.getNextIndex(currentIndex)
-            guard let image = UIImage(named: listImageNames[nextIndexImageName ?? 0]) else { return }
-            sideImageView!.image = image
+            nextImageIndex = imageCellViewModel.getPreviousIndexImage()
         default:
             break
         }
-
+        
+        guard let image = UIImage(named: imageCellViewModel.listImageNames[nextImageIndex]) else { return }
+        sideImageView!.image = image
+        
         cubeTranslation.translateView(imageView,
                                       toView: sideImageView!,
                                       direction: direction!,
                                       duration: Constants.duration) { [weak self] (displayView) in
             guard let self = self else { return }
+            self.vibrate()
             self.imageView.image = displayView.image
-            self.currentImageName = self.listImageNames[self.nextIndexImageName ?? 0]
+            self.imageCellViewModel.setCurrentImageName()
         }
-        completion?(listImageNames[nextIndexImageName ?? 0], selectedIndexCell ?? 0)
+        completion?(imageCellViewModel.listImageNames[nextImageIndex],
+                    imageCellViewModel.selectedCellIndex)
+    }
+    
+    private func vibrate() {
+        AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
     }
 }

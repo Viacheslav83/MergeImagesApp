@@ -164,23 +164,23 @@ final class CubeTransition: UIViewController, CAAnimationDelegate {
         CATransaction.commit()
     }
     
-// MARK: CAAnimation delegate methods
+    // MARK: CAAnimation delegate methods
     public func animationDidStop(_ animation: CAAnimation, finished: Bool) {
-
+        
         guard let fromView = animation.value(forKey: fromViewKey) as? UIImageView else {
             return
         }
-
+        
         guard let transition = translationQueue[fromView] else {
             return
         }
-
+        
         let overlayView = transition.overlayView
         overlayView.removeFromSuperview()
-
+        
         let contentView = transition.toView
         contentView.frame = fromView.frame
-
+        
         if let superview = fromView.superview {
             if superview.subviews.contains(contentView) == false {
                 superview.addSubview(contentView)
@@ -188,12 +188,12 @@ final class CubeTransition: UIViewController, CAAnimationDelegate {
                 superview.bringSubviewToFront(contentView)
             }
         }
-
+        
         let animationLayer = transition.animationLayer
         animationLayer?.removeFromSuperlayer()
         fromView.layer.removeAllAnimations()
         contentView.layer.removeAllAnimations()
-
+        
         transition.completionHandler(contentView)
         translationQueue.removeValue(forKey: fromView)
     }

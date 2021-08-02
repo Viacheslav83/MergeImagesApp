@@ -10,9 +10,9 @@ import Foundation
 class MultipleCubeViewModel {
     
     var originListImageNames: [String]
-    var listImageNames = [String]()
+    var listImageNames: [String]
     var selectedIndexCell: Int?
-
+    
     private var list = ListImageRepository()
     
     init () {
@@ -45,6 +45,7 @@ class MultipleCubeViewModel {
     }
     
     func setListImageNames(with index: Int) {
+        listImageNames = []
         switch index {
         case 0:
             setNewListImageNames(with: list.avatar)

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import  AudioToolbox
 
 class PopUpViewController: UIViewController {
     
@@ -21,7 +22,7 @@ class PopUpViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         imageView.image = UIImage(named: popUpViewModel.selectedImageName)
         contentView.layer.cornerRadius = 15
         setupSwipe()
@@ -40,12 +41,12 @@ class PopUpViewController: UIViewController {
         contentView.addGestureRecognizer(swipeRight)
         
         let swipeDown = UISwipeGestureRecognizer(target: self,
-                                                  action: #selector(handleLongPress(gesture:)))
+                                                 action: #selector(handleLongPress(gesture:)))
         swipeDown.direction = .down
         contentView.addGestureRecognizer(swipeDown)
         
         let longPress = UILongPressGestureRecognizer(target: self,
-                                                 action: #selector(self.handleLongPress(gesture:)))
+                                                     action: #selector(self.handleLongPress(gesture:)))
         self.contentView.addGestureRecognizer(longPress)
     }
     
@@ -62,49 +63,50 @@ class PopUpViewController: UIViewController {
     @objc
     private func handleLongPress(gesture: UISwipeGestureRecognizer) {
         if let currentIndex = popUpViewModel.originListImageNames.firstIndex(of: popUpViewModel.selectedImageName),
-           popUpViewModel.indexCell == currentIndex {
-            completion?(self.popUpViewModel.selectedImageName, self.popUpViewModel.indexCell)
+           popUpViewModel.cellIndex == currentIndex {
+            completion?(self.popUpViewModel.selectedImageName, self.popUpViewModel.cellIndex)
         }
         dismiss(animated: true, completion: nil)
     }
     
     private func rotateImageView() {
+        
+        var nextImageIndex: Int = -1
+        
         if (sideImageView == nil) {
             sideImageView = UIImageView.init(frame: contentView.bounds)
         } else {
             sideImageView!.removeFromSuperview()
         }
         
-        guard let currentIndex = popUpViewModel.originListImageNames.firstIndex(of: popUpViewModel.selectedImageName) else { return }
-        var nextIndex: Int = -1
-        var nextImageName = ""
-        
         switch direction {
         case .left:
-            nextIndex = popUpViewModel.originListImageNames.getNextIndex(currentIndex)
-            nextImageName = popUpViewModel.originListImageNames[nextIndex]
-            guard let image = UIImage(named: nextImageName) else { return }
-            sideImageView!.image = image
+            nextImageIndex = popUpViewModel.getNextImageIndex()
         case .right:
-            nextIndex = popUpViewModel.originListImageNames.getPreviousIndex(currentIndex)
-            nextImageName = popUpViewModel.originListImageNames[nextIndex]
-            guard let image = UIImage(named: nextImageName) else { return }
-            sideImageView!.image = image
+            nextImageIndex = popUpViewModel.getPreviousImageIndex()
         default:
             break
         }
 
+        guard let image = UIImage(named: popUpViewModel.originListImageNames[nextImageIndex]) else { return }
+        sideImageView!.image = image
+        
         cubeTranslation.translateView( imageView,
-                                      toView: sideImageView!,
-                                      direction: direction!,
-                                      duration: Constants.duration) { [weak self] (displayView) in
+                                       toView: sideImageView!,
+                                       direction: direction!,
+                                       duration: Constants.duration) { [weak self] (displayView) in
             guard let self = self else { return }
+            self.vibrate()
             self.imageView.image = displayView.image
-            self.popUpViewModel.setImageString(with: nextImageName)
+            self.popUpViewModel.setCurrentImageName()
         }
         
-        if popUpViewModel.indexCell != nextIndex {
-            completion?(nextImageName, popUpViewModel.indexCell)
+        if popUpViewModel.cellIndex != popUpViewModel.nextImageNameIndex {
+            completion?(popUpViewModel.selectedImageName, popUpViewModel.cellIndex)
         }
+    }
+    
+    private func vibrate() {
+        AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
     }
 }

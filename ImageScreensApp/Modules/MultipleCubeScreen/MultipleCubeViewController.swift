@@ -80,9 +80,10 @@ extension MultipleCubeViewController: UICollectionViewDataSource, UICollectionVi
         cellCompletion(cell)
         
         let indexCell = indexPath.row
-        cell.setup(with: multipleCubeViewModel.listImageNames[indexCell],
-                       at: indexCell,
-                       from: multipleCubeViewModel.originListImageNames)
+        let imageCellViewModel = ImageCellViewModel(imageName: multipleCubeViewModel.listImageNames[indexCell],
+                                                    cellIndex: indexCell,
+                                                    listNames: multipleCubeViewModel.originListImageNames)
+        cell.setup(with: imageCellViewModel)
         
         return cell
     }

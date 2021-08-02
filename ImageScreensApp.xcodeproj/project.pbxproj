@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6409C0B826B3FBEA002AEEBA /* ImageCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6409C0B726B3FBEA002AEEBA /* ImageCellViewModel.swift */; };
 		647591B626AECD8000890463 /* Extension+Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647591B526AECD8000890463 /* Extension+Array.swift */; };
 		647591BA26AFEAC700890463 /* ListImageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647591B926AFEAC700890463 /* ListImageRepository.swift */; };
 		648104F426A81BA600C1AC2E /* MultipleCube.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 648104F326A81BA600C1AC2E /* MultipleCube.storyboard */; };
@@ -28,6 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6409C0B726B3FBEA002AEEBA /* ImageCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCellViewModel.swift; sourceTree = "<group>"; };
 		647591B526AECD8000890463 /* Extension+Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Extension+Array.swift"; path = "ImageScreensApp/Common/Extensions/Extension+Array.swift"; sourceTree = SOURCE_ROOT; };
 		647591B926AFEAC700890463 /* ListImageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListImageRepository.swift; sourceTree = "<group>"; };
 		648104F326A81BA600C1AC2E /* MultipleCube.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MultipleCube.storyboard; sourceTree = "<group>"; };
@@ -69,6 +71,16 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
+		6409C0B426B2EA0E002AEEBA /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				64D7E0B6269C50F3003D151E /* Main.storyboard */,
+				648104F726A81BBB00C1AC2E /* MultipleCubeScreen */,
+				6481050C26A97FD400C1AC2E /* PopUpScreen */,
+			);
+			path = Modules;
+			sourceTree = "<group>";
+		};
 		647591B726AECE5800890463 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -103,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				648104F826A81CA600C1AC2E /* ImageCollectionViewCell.swift */,
+				6409C0B726B3FBEA002AEEBA /* ImageCellViewModel.swift */,
 				648104F926A81CA600C1AC2E /* ImageCollectionViewCell.xib */,
 			);
 			path = Cells;
@@ -148,9 +161,7 @@
 			isa = PBXGroup;
 			children = (
 				64D7E0BE269C50F7003D151E /* Info.plist */,
-				64D7E0B6269C50F3003D151E /* Main.storyboard */,
-				648104F726A81BBB00C1AC2E /* MultipleCubeScreen */,
-				6481050C26A97FD400C1AC2E /* PopUpScreen */,
+				6409C0B426B2EA0E002AEEBA /* Modules */,
 				647591B826AFEA7700890463 /* Common */,
 			);
 			path = ImageScreensApp;
@@ -242,6 +253,7 @@
 			files = (
 				6481050126A822D600C1AC2E /* Extension+UIImageView.swift in Sources */,
 				6481051026A9889800C1AC2E /* PopUpViewModel.swift in Sources */,
+				6409C0B826B3FBEA002AEEBA /* ImageCellViewModel.swift in Sources */,
 				64D7E0B1269C50F3003D151E /* AppDelegate.swift in Sources */,
 				6481050E26A9882100C1AC2E /* MultipleCubeViewModel.swift in Sources */,
 				648104FA26A81CA600C1AC2E /* ImageCollectionViewCell.swift in Sources */,
